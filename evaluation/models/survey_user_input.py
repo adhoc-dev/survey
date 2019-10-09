@@ -33,8 +33,7 @@ class SurveyUserInput(models.Model):
         for user_input in self:
             computed_score = 0
             questions = question_obj.search(
-                [('survey_id', '=', user_input.survey_id.id),
-                 ('max_score', '!=', 0)])
+                [('survey_id', '=', user_input.survey_id.id)])
             for question in questions:
                 user_input_lines = user_input_lines_obj.search(
                     [('question_id', '=', question.id),
@@ -52,17 +51,15 @@ class SurveyUserInput(models.Model):
                         question, pre_score)
 
                 computed_score += question_score
-
-                uiqs_ids = uiqs_obj.search(
-                    [('question_id', '=', question.id),
-                     ('user_input_id', '=', user_input.id)], limit=1)
+                input_question_scores = user_input.input_question_score_ids\
+                    .filtered(lambda x: x.question_id == question)
 
                 # Calculte score_percentage
-                score_percentage = question_score * 100.0 / question\
-                    .max_score
+                score_percentage = question.max_score \
+                    and question_score * 100.0 / question.max_score
 
-                if uiqs_ids:
-                    uiqs_ids.write(
+                if input_question_scores:
+                    input_question_scores.write(
                         {'score': question_score,
                          'score_percentage': score_percentage})
                 else:
@@ -72,10 +69,9 @@ class SurveyUserInput(models.Model):
                         'question_id': question.id,
                         'user_input_id': user_input.id,
                     })
-            if user_input.survey_id.max_score\
-                    and user_input.survey_id.max_score != 0:
-                computed_score = computed_score * 100.0 / user_input\
-                    .survey_id.max_score
+            if user_input.survey_id.max_score:
+                computed_score = user_input.survey_id.max_score and \
+                    computed_score * 100.0 / user_input.survey_id.max_score
             else:
                 computed_score = False
             user_input.write({'score': computed_score})
