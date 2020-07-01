@@ -4,7 +4,7 @@
 {
     "name": "Partner Survey",
     "category": "Marketing",
-    "version": "12.0.1.0.0",
+    "version": "13.0.1.0.0",
     "depends": ["survey",],
     "data": ["views/res_partner_view.xml"],
     "author": "Tecnativa, " "Camptocamp, " "Odoo Community Association (OCA)",

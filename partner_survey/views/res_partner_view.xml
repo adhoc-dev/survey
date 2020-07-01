@@ -2,7 +2,6 @@
 <odoo>
     <record id="act_partner_survey_input" model="ir.actions.act_window">
         <field name="res_model">survey.user_input</field>
-        <field name="view_type">form</field>
         <field name="name">Surveys</field>
         <field name="view_mode">tree,form</field>
         <field
